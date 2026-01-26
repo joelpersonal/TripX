@@ -100,14 +100,23 @@ class TripXIntegratedEngine:
         
         recommendations = enhanced_data['recommendations']
         
-        comparison_prompt = f"""Compare these top 3 travel destinations for a traveler:
+        if len(recommendations) < 2:
+            return {
+                'status': 'insufficient_data',
+                'message': 'Need at least 2 destinations for comparison'
+            }
+        
+        # Build comparison prompt based on available recommendations
+        destinations_text = ""
+        for i, rec in enumerate(recommendations, 1):
+            destinations_text += f"{i}. {rec['ml_recommendation']['destination']} (Score: {rec['ml_score']:.3f})\n"
+        
+        comparison_prompt = f"""Compare these top travel destinations for a traveler:
 Budget: ${user_preferences['budget']}/day, Duration: {user_preferences['duration']} days
 Trip Type: {user_preferences['trip_type']}, Season: {user_preferences['season']}
 
 Destinations:
-1. {recommendations[0]['ml_recommendation']['destination']} (Score: {recommendations[0]['ml_score']:.3f})
-2. {recommendations[1]['ml_recommendation']['destination']} (Score: {recommendations[1]['ml_score']:.3f})
-3. {recommendations[2]['ml_recommendation']['destination']} (Score: {recommendations[2]['ml_score']:.3f})
+{destinations_text}
 
 Provide a brief comparison highlighting the unique strengths of each destination."""
 

@@ -8,6 +8,10 @@ TripX is an end-to-end travel recommendation system that leverages multiple AI t
 
 ##  Architecture & Technical Implementation
 
+<img width="1536" height="1024" alt="ArchitectureTripX" src="https://github.com/user-attachments/assets/5c616d60-c075-4f98-a324-5ae6168036bb" />
+
+
+
 ### Core ML Engine
 - **Multi-Factor Scoring Algorithm**: Custom weighted scoring system combining budget compatibility, duration matching, trip type preferences, seasonal optimization, and quality metrics
 - **Feature Engineering Pipeline**: 27 engineered features from 12 base attributes including cost categorization, duration compatibility scoring, and quality indicators
@@ -89,12 +93,6 @@ scoring_weights = {
 - **API Enrichment**: Real-time data integration
 - **Strict Separation**: Each component has defined responsibilities
 
-### 4. Professional Web Interface
-- Custom black & white corporate theme
-- Interactive data visualizations
-- Real-time recommendation processing
-- Mobile-responsive design
-- Professional typography (Inter font family)
 
 ## System Performance
 
@@ -159,7 +157,7 @@ TripX/
 - **Comprehensive Analysis**: Multi-factor scoring with detailed breakdowns
 - **Scalable Architecture**: Modular design supporting future enhancements
 
-## 🔬 Technical Highlights
+##  Technical Highlights
 
 **Machine Learning Engineering**
 - Custom recommendation algorithm with multi-factor scoring
@@ -180,6 +178,18 @@ TripX/
 - Multiple external service integrations
 - Error handling and fallback mechanisms
 - Real-time data processing
+  
+  
+Output Overview:
+
+(TripX)
+<img width="1886" height="799" alt="output1" src="https://github.com/user-attachments/assets/f7943b7b-736a-439f-8632-89c9f26930f4" />
+
+(AI-Powered Personalized Recommendations)
+<img width="1899" height="841" alt="output2" src="https://github.com/user-attachments/assets/97e3f5d9-f1ce-4ecf-a0ae-ec35671094bc" />
+
+
+
 
 ---
 

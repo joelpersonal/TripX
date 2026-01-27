@@ -7,10 +7,9 @@ from datetime import datetime, timedelta
 
 class FreeLLMEngine:
     """
-    LLM Engine using FREE APIs only for text generation.
+    LLM Engine using free APIs for text generation.
     
-    DESIGN PRINCIPLE: ML does the decision-making, LLM only generates text.
-    The ML recommendation system remains the core intelligence.
+    Note: ML makes decisions, LLM only generates text.
     """
     
     def __init__(self, provider: str = "groq"):
@@ -18,7 +17,7 @@ class FreeLLMEngine:
         self.setup_llm_client()
     
     def setup_llm_client(self):
-        """Setup free LLM client based on provider"""
+        """Setup free LLM client"""
         if self.provider == "groq":
             # Groq API (free tier)
             self.api_key = os.getenv('GROQ_API_KEY', 'demo_key')
@@ -26,24 +25,19 @@ class FreeLLMEngine:
             self.model = "llama3-8b-8192"
         
         elif self.provider == "huggingface":
-            # Hugging Face Inference API (free tier)
+            # Hugging Face API (free tier)
             self.api_key = os.getenv('HF_API_KEY', 'demo_key')
             self.base_url = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-large"
             self.model = "microsoft/DialoGPT-large"
         
         elif self.provider == "ollama":
-            # Local Ollama (completely free)
+            # Local Ollama (free)
             self.base_url = "http://localhost:11434/api/generate"
             self.model = "llama2"
             self.api_key = None
     
     def generate_text(self, prompt: str, max_tokens: int = 500) -> str:
-        """
-        Generate text using free LLM API
-        
-        IMPORTANT: This is ONLY for text generation, not decision making.
-        All travel decisions are made by the ML recommendation system.
-        """
+        """Generate text using free LLM API - only for text, not decisions."""
         try:
             if self.api_key == 'demo_key':
                 return self._mock_llm_response(prompt)
@@ -153,22 +147,16 @@ class FreeAPIIntegrator:
     """
     Free API integrator for enriching recommendations.
     
-    DESIGN PRINCIPLE: APIs are used ONLY for enrichment, not decision making.
-    The ML system makes all recommendations, APIs just add context.
+    Note: APIs only provide enrichment data, not recommendations.
     """
     
     def __init__(self):
-        # All APIs used are FREE and require no API keys
         self.weather_base_url = "https://api.open-meteo.com/v1/forecast"
         self.places_base_url = "https://api.opentripmap.com/0.1/en/places"
         self.opentripmap_key = os.getenv('OPENTRIPMAP_KEY', 'demo_key')
     
     def get_weather_data(self, latitude: float, longitude: float) -> Dict:
-        """
-        Get weather data using Open-Meteo (completely free, no API key needed)
-        
-        This is used ONLY to validate seasonal suitability, not to make recommendations.
-        """
+        """Get weather data using Open-Meteo (free, no API key needed)"""
         try:
             params = {
                 'latitude': latitude,
@@ -195,11 +183,7 @@ class FreeAPIIntegrator:
         return self._mock_weather_data()
     
     def get_attractions(self, latitude: float, longitude: float, radius: int = 5000) -> List[Dict]:
-        """
-        Get attractions using OpenTripMap (free tier available)
-        
-        This is used ONLY to enrich recommendations, not to make them.
-        """
+        """Get attractions using OpenTripMap (free tier available)"""
         try:
             if self.opentripmap_key == 'demo_key':
                 return self._mock_attractions_data()
@@ -258,12 +242,12 @@ class FreeAPIIntegrator:
 
 class TravelItineraryGenerator:
     """
-    Generates personalized travel itineraries using ML recommendations + LLM text generation + API enrichment.
+    Generates travel itineraries using ML recommendations + LLM text + API data.
     
-    ARCHITECTURE:
-    1. ML System: Makes all travel decisions and recommendations
-    2. LLM: Generates natural language text only
-    3. APIs: Provide enrichment data only
+    Architecture:
+    - ML System: Makes travel decisions
+    - LLM: Generates text only
+    - APIs: Provide enrichment data
     """
     
     def __init__(self, llm_provider: str = "groq"):
@@ -286,15 +270,15 @@ class TravelItineraryGenerator:
     
     def generate_itinerary(self, user_preferences: Dict, ml_recommendations: List[Dict]) -> Dict:
         """
-        Generate complete travel itinerary using ML recommendations as the foundation.
+        Generate complete travel itinerary using ML recommendations.
         
-        IMPORTANT: ML recommendations are the source of truth.
-        LLM and APIs only enhance the presentation and add context.
+        Note: ML recommendations are the source of truth.
+        LLM and APIs only enhance presentation and add context.
         """
         if not ml_recommendations:
             return {'error': 'No ML recommendations provided'}
         
-        # Use the TOP ML recommendation as the primary destination
+        # Use the top ML recommendation as primary destination
         primary_destination = ml_recommendations[0]
         
         # Get enrichment data
@@ -324,7 +308,7 @@ class TravelItineraryGenerator:
         return itinerary
     
     def _get_destination_weather(self, destination: Dict) -> Dict:
-        """Get weather data for destination (API enrichment only)"""
+        """Get weather data for destination"""
         dest_name = destination['destination']
         coordinates = self.city_coordinates.get(dest_name, (0, 0))
         
@@ -334,7 +318,7 @@ class TravelItineraryGenerator:
             return self.api_integrator._mock_weather_data()
     
     def _get_destination_attractions(self, destination: Dict) -> List[Dict]:
-        """Get attractions for destination (API enrichment only)"""
+        """Get attractions for destination"""
         dest_name = destination['destination']
         coordinates = self.city_coordinates.get(dest_name, (0, 0))
         
@@ -344,7 +328,7 @@ class TravelItineraryGenerator:
             return self.api_integrator._mock_attractions_data()
     
     def _generate_itinerary_text(self, user_prefs: Dict, destination: Dict, attractions: List[Dict]) -> str:
-        """Generate day-wise itinerary using LLM (text generation only)"""
+        """Generate day-wise itinerary using LLM"""
         
         attractions_text = ", ".join([attr['name'] for attr in attractions[:3]])
         
@@ -361,7 +345,7 @@ Create a day-by-day itinerary with morning, afternoon, and evening activities. K
         return self.llm_engine.generate_text(prompt, max_tokens=600)
     
     def _generate_explanation_text(self, user_prefs: Dict, destination: Dict) -> str:
-        """Generate natural language explanation using LLM (text generation only)"""
+        """Generate explanation using LLM"""
         
         prompt = f"""Explain why {destination['destination']}, {destination['country']} is an excellent choice for this traveler:
 

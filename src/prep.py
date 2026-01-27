@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple, Optional
 class TripXPreprocessor:
     
     def __init__(self):
+        # Cost categories for budget classification
         self.cost_categories = {
             'budget': (0, 60),
             'mid': (60, 120), 
@@ -16,6 +17,7 @@ class TripXPreprocessor:
         self.trip_types = ['beach', 'culture', 'urban', 'luxury', 'nature']
         self.seasons = ['spring', 'summer', 'fall', 'winter', 'dry_season', 'cool_season']
         
+        # Weights for quality score calculation
         self.quality_weights = {
             'popularity': 0.6,
             'safety': 0.4
@@ -28,14 +30,17 @@ class TripXPreprocessor:
         return 'luxury'
     
     def calculate_duration_compatibility(self, user_days: int, min_days: int, max_days: int) -> float:
+        # Perfect match if user duration is within range
         if min_days <= user_days <= max_days:
             return 1.0
         
+        # Calculate distance from ideal range
         if user_days < min_days:
             distance = min_days - user_days
         else:
             distance = user_days - max_days
         
+        # Score based on how far off the ideal range
         if distance == 1:
             return 0.8
         elif distance <= 3:
@@ -44,9 +49,11 @@ class TripXPreprocessor:
             return 0.2
     
     def calculate_season_match(self, user_season: str, dest_season: str) -> float:
+        # Exact season match
         if user_season == dest_season:
             return 1.0
         
+        # Similar seasons get partial score
         season_similarity = {
             'spring': ['summer', 'fall'],
             'summer': ['spring', 'dry_season'],
@@ -77,6 +84,7 @@ class TripXPreprocessor:
         numerical_features = ['avg_cost_per_day', 'popularity_score', 'safety_score', 
                             'quality_score', 'min_days', 'max_days']
         
+        # Normalize to 0-1 range
         for feature in numerical_features:
             if feature in df_normalized.columns:
                 min_val = df_normalized[feature].min()

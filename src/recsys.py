@@ -10,6 +10,7 @@ class TripXRecommendationEngine:
         self.df = processed_df
         self.preprocessor = preprocessor
         
+        # Scoring weights for different factors
         self.scoring_weights = {
             'budget_fit': 0.3,
             'duration_fit': 0.2,
@@ -19,9 +20,11 @@ class TripXRecommendationEngine:
         }
     
     def calculate_budget_fit_score(self, user_budget: float, dest_cost: float) -> float:
+        # Perfect fit if destination is within budget
         if user_budget >= dest_cost:
             return 1.0
         
+        # Partial scores for slightly over budget
         budget_ratio = dest_cost / user_budget
         if budget_ratio <= 1.2:
             return 0.8
@@ -34,9 +37,11 @@ class TripXRecommendationEngine:
         user_trip_type = user_profile['preferred_trip_type']
         dest_trip_type = destination_row['trip_type']
         
+        # Exact match gets full score
         if user_trip_type == dest_trip_type:
             return 1.0
         
+        # Compatible types get partial score
         type_compatibility = {
             'culture': ['urban', 'nature'],
             'beach': ['nature', 'luxury'],
@@ -89,9 +94,11 @@ class TripXRecommendationEngine:
     def filter_destinations(self, user_profile: Dict) -> pd.DataFrame:
         filtered_df = self.df.copy()
         
+        # Filter by budget (allow some flexibility)
         max_budget = user_profile['budget'] * 1.3
         filtered_df = filtered_df[filtered_df['avg_cost_per_day'] <= max_budget]
         
+        # Filter by duration compatibility
         user_duration = user_profile['duration']
         duration_compatible = filtered_df.apply(
             lambda row: self.preprocessor.calculate_duration_compatibility(

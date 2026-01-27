@@ -6,18 +6,16 @@ import json
 
 class TripXIntegratedEngine:
     """
-    Integrated engine that combines ML recommendations with LLM text generation and API enrichment.
+    Combines ML recommendations with LLM text generation and API data.
     
-    STRICT ARCHITECTURE:
-    1. ML System: Core intelligence for destination recommendations and scoring
-    2. LLM Engine: Natural language generation ONLY (no decision making)
-    3. API Integration: Data enrichment ONLY (weather, attractions)
-    
-    The ML system remains the authoritative source for all travel recommendations.
+    Architecture:
+    - ML System: Makes all travel decisions and recommendations
+    - LLM Engine: Generates natural language text only
+    - API Integration: Provides weather and attraction data
     """
     
     def __init__(self, llm_provider: str = "groq"):
-        print("🧠 Loading ML recommendation engine...")
+        print("⚙️ Loading ML recommendation engine...")
         self.ml_engine, self.destinations_df = create_recommendation_engine('data/raw/dest.csv')
         
         print("🤖 Loading LLM and API integrations...")
@@ -25,19 +23,19 @@ class TripXIntegratedEngine:
         
         print("✅ Integrated engine ready!")
         print(f"📊 ML Engine: {len(self.destinations_df)} destinations loaded")
-        print(f"🤖 LLM Provider: {llm_provider}")
+        print(f"🔧 LLM Provider: {llm_provider}")
     
     def get_enhanced_recommendations(self, user_preferences: Dict, top_n: int = 3) -> Dict:
         """
-        Get ML recommendations enhanced with LLM-generated itineraries and API data.
+        Get ML recommendations enhanced with LLM text and API data.
         
-        PROCESS:
-        1. ML engine generates recommendations (authoritative)
-        2. LLM generates natural language descriptions
-        3. APIs provide enrichment data
+        Process:
+        1. ML engine generates recommendations
+        2. LLM generates descriptions
+        3. APIs provide weather and attraction data
         """
         
-        print("🧠 Generating ML recommendations...")
+        print("🎯 Generating ML recommendations...")
         user_profile = self.ml_engine.preprocessor.create_user_profile_features(
             budget=user_preferences['budget'],
             duration=user_preferences['duration'],
@@ -54,7 +52,7 @@ class TripXIntegratedEngine:
                 'user_preferences': user_preferences
             }
         
-        print("🤖 Enhancing with LLM and API data...")
+        print("🔧 Enhancing with LLM and API data...")
         enhanced_recommendations = []
         
         for i, ml_rec in enumerate(ml_recommendations):
@@ -91,7 +89,7 @@ class TripXIntegratedEngine:
         }
     
     def generate_comparison_report(self, user_preferences: Dict) -> Dict:
-        """Generate a comparison report of top destinations with detailed analysis."""
+        """Generate comparison report of top destinations."""
         
         enhanced_data = self.get_enhanced_recommendations(user_preferences, top_n=3)
         
@@ -106,7 +104,7 @@ class TripXIntegratedEngine:
                 'message': 'Need at least 2 destinations for comparison'
             }
         
-        # Build comparison prompt based on available recommendations
+    
         destinations_text = ""
         for i, rec in enumerate(recommendations, 1):
             destinations_text += f"{i}. {rec['ml_recommendation']['destination']} (Score: {rec['ml_score']:.3f})\n"
@@ -171,20 +169,20 @@ def test_integrated_system():
         results = engine.get_enhanced_recommendations(profile['preferences'], top_n=2)
         
         if results['status'] == 'success':
-            print(f"✅ Success! Found {results['total_recommendations']} recommendations")
+            print(f" Success! Found {results['total_recommendations']} recommendations")
             
             for i, rec in enumerate(results['recommendations'], 1):
                 ml_rec = rec['ml_recommendation']
                 print(f"\n--- Recommendation {i} ---")
-                print(f"🏛️ Destination: {ml_rec['destination']}, {ml_rec['country']}")
-                print(f"🎯 ML Score: {rec['ml_score']:.3f}")
-                print(f"💰 Cost: ${ml_rec['cost_per_day']}/day")
-                print(f"🧠 ML Reasoning: {rec['ml_reasoning'][:100]}...")
-                print(f"🤖 LLM Explanation: {rec['llm_explanation'][:100]}...")
+                print(f" Destination: {ml_rec['destination']}, {ml_rec['country']}")
+                print(f" ML Score: {rec['ml_score']:.3f}")
+                print(f" Cost: ${ml_rec['cost_per_day']}/day")
+                print(f" ML Reasoning: {rec['ml_reasoning'][:100]}...")
+                print(f"🤖LLM Explanation: {rec['llm_explanation'][:100]}...")
                 print(f"🌤️ Weather: {rec['weather_info'].get('current_temp', 'N/A')}°C")
                 print(f"🏛️ Attractions: {len(rec['attractions'])} found")
         else:
-            print(f"❌ No recommendations: {results.get('message', 'Unknown error')}")
+            print(f" No recommendations: {results.get('message', 'Unknown error')}")
     
     print(f"\n✅ Integrated system test complete!")
     print(f"🏗️ Architecture: ML (decisions) + LLM (text) + APIs (enrichment)")

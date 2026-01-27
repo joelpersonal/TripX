@@ -4,51 +4,32 @@ import os
 sys.path.append('src')
 
 from integrated_engine import TripXIntegratedEngine
-import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
-from datetime import datetime
 import time
-import base64
-
-
-
-
 
 def apply_simple_theme():
-    """Apply minimal styling for simple UI"""
     st.markdown("""
     <style>
-    /* Simple dark theme */
     .stApp {
         background-color: #000000;
         color: #FFFFFF;
     }
-    
-    /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
-    /* Simple text styling */
     h1, h2, h3, h4, h5, h6 {
         color: #FFFFFF !important;
     }
-    
-    /* Simple input styling */
     .stNumberInput > div > div > input {
         background-color: #333333 !important;
         color: #FFFFFF !important;
         border: 1px solid #666666 !important;
     }
-    
     .stSelectbox > div > div {
         background-color: #333333 !important;
         color: #FFFFFF !important;
         border: 1px solid #666666 !important;
     }
-    
-    /* Simple button styling */
     .stButton > button {
         background-color: #FFFFFF !important;
         color: #000000 !important;
@@ -56,7 +37,6 @@ def apply_simple_theme():
         border-radius: 4px !important;
         font-weight: 600 !important;
     }
-    
     .stButton > button:hover {
         background-color: #CCCCCC !important;
     }
@@ -65,7 +45,6 @@ def apply_simple_theme():
 
 
 def initialize_session_state():
-    """Initialize session state variables"""
     if 'engine' not in st.session_state:
         st.session_state.engine = None
     if 'recommendations' not in st.session_state:
@@ -75,7 +54,6 @@ def initialize_session_state():
 
 
 def load_engine():
-    """Load the TripX integrated engine"""
     if st.session_state.engine is None:
         with st.spinner("Loading TripX AI Engine..."):
             st.session_state.engine = TripXIntegratedEngine("groq")
@@ -83,133 +61,66 @@ def load_engine():
 
 
 def create_score_chart(recommendations):
-    """Create bar chart showing ML scores"""
     if not recommendations:
         return None
     
     destinations = [rec['ml_recommendation']['destination'] for rec in recommendations]
     scores = [rec['ml_score'] for rec in recommendations]
-    
-    # Black and white gradient colors
     colors = ['#FFFFFF', '#CCCCCC', '#999999', '#666666', '#333333'][:len(destinations)]
     
     fig = go.Figure(data=[
         go.Bar(
             x=destinations,
             y=scores,
-            marker=dict(
-                color=colors,
-                line=dict(color='#FFFFFF', width=2),
-                pattern_shape="",
-            ),
+            marker=dict(color=colors, line=dict(color='#FFFFFF', width=2)),
             text=[f"{score:.3f}" for score in scores],
             textposition='auto',
-            textfont=dict(
-                color='#000000', 
-                size=14, 
-                family='Inter, sans-serif',
-                weight='bold'
-            ),
+            textfont=dict(color='#000000', size=14, weight='bold'),
             hovertemplate='<b>%{x}</b><br>ML Score: %{y:.3f}<extra></extra>',
         )
     ])
     
     fig.update_layout(
-        title=dict(
-            text="Machine Learning Recommendation Scores",
-            font=dict(color='#FFFFFF', size=22, family='Inter, sans-serif', weight='bold'),
-            x=0.5,
-            xanchor='center'
-        ),
-        xaxis=dict(
-            title="Destinations",
-            title_font=dict(color='#FFFFFF', size=16, family='Inter, sans-serif'),
-            tickfont=dict(color='#CCCCCC', size=12, family='Inter, sans-serif'),
-            gridcolor='#666666',
-            showgrid=True,
-            zeroline=False
-        ),
-        yaxis=dict(
-            title="ML Confidence Score",
-            range=[0, 1],
-            title_font=dict(color='#FFFFFF', size=16, family='Inter, sans-serif'),
-            tickfont=dict(color='#CCCCCC', size=12, family='Inter, sans-serif'),
-            gridcolor='#666666',
-            showgrid=True,
-            zeroline=False
-        ),
+        title=dict(text="Machine Learning Recommendation Scores", font=dict(color='#FFFFFF', size=22), x=0.5),
+        xaxis=dict(title="Destinations", title_font=dict(color='#FFFFFF'), tickfont=dict(color='#CCCCCC')),
+        yaxis=dict(title="ML Confidence Score", range=[0, 1], title_font=dict(color='#FFFFFF'), tickfont=dict(color='#CCCCCC')),
         plot_bgcolor='#000000',
         paper_bgcolor='#000000',
         height=450,
-        showlegend=False,
-        margin=dict(l=70, r=70, t=90, b=70),
-        font=dict(family='Inter, sans-serif')
+        showlegend=False
     )
     
     return fig
 
 
 def create_cost_comparison(recommendations):
-    """Create cost comparison chart"""
     if not recommendations:
         return None
     
     destinations = [rec['ml_recommendation']['destination'] for rec in recommendations]
     costs = [rec['ml_recommendation']['cost_per_day'] for rec in recommendations]
-    
-    # Black and white gradient colors for costs
     colors = ['#FFFFFF', '#CCCCCC', '#999999', '#666666', '#333333'][:len(destinations)]
     
     fig = go.Figure(data=[
         go.Bar(
             x=destinations,
             y=costs,
-            marker=dict(
-                color=colors,
-                line=dict(color='#FFFFFF', width=2),
-                pattern_shape="",
-            ),
+            marker=dict(color=colors, line=dict(color='#FFFFFF', width=2)),
             text=[f"${cost}" for cost in costs],
             textposition='auto',
-            textfont=dict(
-                color='#000000', 
-                size=14, 
-                family='Inter, sans-serif',
-                weight='bold'
-            ),
+            textfont=dict(color='#000000', size=14, weight='bold'),
             hovertemplate='<b>%{x}</b><br>Cost: $%{y}/day<extra></extra>',
         )
     ])
     
     fig.update_layout(
-        title=dict(
-            text="Daily Cost Analysis",
-            font=dict(color='#FFFFFF', size=22, family='Inter, sans-serif', weight='bold'),
-            x=0.5,
-            xanchor='center'
-        ),
-        xaxis=dict(
-            title="Destinations",
-            title_font=dict(color='#FFFFFF', size=16, family='Inter, sans-serif'),
-            tickfont=dict(color='#CCCCCC', size=12, family='Inter, sans-serif'),
-            gridcolor='#666666',
-            showgrid=True,
-            zeroline=False
-        ),
-        yaxis=dict(
-            title="Cost per Day (USD)",
-            title_font=dict(color='#FFFFFF', size=16, family='Inter, sans-serif'),
-            tickfont=dict(color='#CCCCCC', size=12, family='Inter, sans-serif'),
-            gridcolor='#666666',
-            showgrid=True,
-            zeroline=False
-        ),
+        title=dict(text="Daily Cost Analysis", font=dict(color='#FFFFFF', size=22), x=0.5),
+        xaxis=dict(title="Destinations", title_font=dict(color='#FFFFFF'), tickfont=dict(color='#CCCCCC')),
+        yaxis=dict(title="Cost per Day (USD)", title_font=dict(color='#FFFFFF'), tickfont=dict(color='#CCCCCC')),
         plot_bgcolor='#000000',
         paper_bgcolor='#000000',
         height=450,
-        showlegend=False,
-        margin=dict(l=70, r=70, t=90, b=70),
-        font=dict(family='Inter, sans-serif')
+        showlegend=False
     )
     
     return fig
@@ -217,7 +128,6 @@ def create_cost_comparison(recommendations):
 
 
 def main():
-    """Simple Streamlit application with native components"""
     st.set_page_config(
         page_title="TripX - AI Travel Recommendations",
         page_icon="images/tripX_logo.png",
@@ -225,11 +135,9 @@ def main():
         initial_sidebar_state="collapsed"
     )
     
-    # Apply simple theme and initialize
     apply_simple_theme()
     initialize_session_state()
     
-    # Simple header
     st.title("Hey there, traveler!")
     st.subheader("Welcome to TripX")
     
@@ -358,7 +266,6 @@ def main():
                 
                 st.session_state.user_preferences = user_preferences
                 
-                # Load engine and get recommendations
                 engine = load_engine()
                 
                 with st.spinner("Hold on, I'm thinking really hard about this..."):
@@ -367,17 +274,13 @@ def main():
                         time.sleep(0.01)
                         progress_bar.progress(i + 1)
                     
-                    results = engine.get_enhanced_recommendations(
-                        user_preferences, 
-                        top_n=num_recommendations
-                    )
-                    
+                    results = engine.get_enhanced_recommendations(user_preferences, top_n=num_recommendations)
                     st.session_state.recommendations = results
                 
                 st.success("Ta-da! I found some amazing places for you!")
                 st.rerun()
         
-        # Simple system info
+        # System info
         st.divider()
         st.header("Powered by Advanced AI Technology")
         st.write("Our intelligent system combines multiple AI technologies to deliver precise, personalized travel recommendations")
@@ -520,7 +423,7 @@ def main():
             st.write(results.get('message', 'Unknown error'))
             st.write("Try adjusting your preferences (budget, duration, or trip type) for more options.")
     
-    # Simple footer
+    # Footer
     st.divider()
     st.write("**TripX** — ML-Driven Travel Recommendations")
     st.caption("Built with Streamlit • Python ML • Free APIs")

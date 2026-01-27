@@ -18,7 +18,7 @@ class TripXIntegratedEngine:
     
     def __init__(self, llm_provider: str = "groq"):
         print("🧠 Loading ML recommendation engine...")
-        self.ml_engine, self.destinations_df = create_recommendation_engine('../data/raw/dest.csv')
+        self.ml_engine, self.destinations_df = create_recommendation_engine('data/raw/dest.csv')
         
         print("🤖 Loading LLM and API integrations...")
         self.itinerary_generator = TravelItineraryGenerator(llm_provider)

@@ -119,7 +119,20 @@ class FreeLLMEngine:
     def _mock_llm_response(self, prompt: str) -> str:
         """Mock LLM response for demo purposes"""
         if "itinerary" in prompt.lower():
-            return 
+            return """Day 1: Arrival and City Center
+- Morning: Arrive and check into accommodation
+- Afternoon: Explore the main city center and get oriented
+- Evening: Try local cuisine at a recommended restaurant
+
+Day 2: Cultural Exploration
+- Morning: Visit the most famous cultural attraction
+- Afternoon: Explore local markets and neighborhoods
+- Evening: Experience local nightlife or cultural performances
+
+Day 3: Nature and Relaxation
+- Morning: Visit natural attractions or parks
+- Afternoon: Leisure time for personal exploration
+- Evening: Sunset viewing at a scenic location""" 
         
         elif "explanation" in prompt.lower():
             return "This destination was recommended because it perfectly matches your preferences for culture and adventure, fits within your budget range, and offers the ideal trip duration you're looking for. The combination of rich history, vibrant local culture, and excellent safety ratings makes it an outstanding choice for your travel style."

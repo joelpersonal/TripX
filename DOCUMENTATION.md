@@ -35,6 +35,10 @@ TripX addresses these challenges through a hybrid artificial intelligence system
 
 The TripX architecture follows a modular design pattern that separates concerns across three primary layers: the Machine Learning Core, the AI Integration Layer, and the Presentation Interface. This separation ensures maintainability, scalability, and clear responsibility boundaries.
 
+
+<img width="1536" height="1024" alt="ArchitectureTripX" src="https://github.com/user-attachments/assets/8dc0f2a1-3888-4c62-a3ed-806efaf8be27" />
+
+
 ### Architectural Principles
 
 The system adheres to several key architectural principles that guide its design and implementation. First, the principle of separation of concerns ensures that each component has a well-defined responsibility. The machine learning engine focuses exclusively on generating accurate recommendations based on quantitative analysis. The language model integration handles natural language generation without influencing the core recommendation logic. The API integration layer provides data enrichment without affecting the fundamental recommendation process.
@@ -334,6 +338,15 @@ The system architecture supports several scaling strategies that can accommodate
 Horizontal scaling can be achieved through deployment of multiple application instances behind a load balancer. The stateless design of the application makes horizontal scaling straightforward, with session state managed through the web framework rather than application-level state management.
 
 Database scaling can be implemented through migration from file-based data storage to database systems that support larger datasets and more complex queries. The data access layer is designed to support this migration with minimal changes to business logic.
+
+### Output Overview
+
+<img width="1886" height="799" alt="output1" src="https://github.com/user-attachments/assets/b63f383c-58b3-46a0-b023-90114a6e93ac" />
+
+<img width="1903" height="634" alt="ot3" src="https://github.com/user-attachments/assets/62cf6f8e-3edc-4905-953f-c05015e24880" />
+
+<img width="1899" height="841" alt="output2" src="https://github.com/user-attachments/assets/3bd67ba0-c26e-42b6-abca-e7a8f69e3de3" />
+
 
 ### Future Enhancement Opportunities
 

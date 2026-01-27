@@ -391,19 +391,6 @@ def main():
                         itinerary_preview = itinerary[:300] + "..." if len(itinerary) > 300 else itinerary
                         st.write(itinerary_preview if itinerary_preview else "Itinerary information not available.")
             
-            # Comparison report
-            if len(results['recommendations']) >= 2:
-                st.divider()
-                st.subheader("AI Comparison Analysis")
-                
-                with st.spinner("Generating comparison report..."):
-                    comparison = st.session_state.engine.generate_comparison_report(
-                        st.session_state.user_preferences
-                    )
-                
-                if comparison['status'] == 'success':
-                    st.info(comparison['comparison_analysis'])
-            
             # System info
             st.divider()
             st.subheader("System Information")

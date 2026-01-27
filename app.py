@@ -373,19 +373,23 @@ def main():
                         st.write("**Current Weather:**", f"{rec['weather_info'].get('current_temp', 'N/A')}°C")
                         
                         st.write("**Machine Learning Analysis:**")
-                        st.write(rec['ml_reasoning'])
+                        ml_reasoning = rec.get('ml_reasoning', '') or ''
+                        st.write(ml_reasoning if ml_reasoning else "ML analysis not available.")
                         
                         st.write("**Key Attractions:**")
-                        for j, attraction in enumerate(rec['attractions'][:3], 1):
+                        attractions = rec.get('attractions', []) or []
+                        for j, attraction in enumerate(attractions[:3], 1):
                             st.write(f"{j}. **{attraction['name']}** ({attraction['category']})")
                     
                     with col2:
                         st.write("**AI-Generated Insights:**")
-                        st.write(rec['llm_explanation'])
+                        llm_explanation = rec.get('llm_explanation', '') or ''
+                        st.write(llm_explanation if llm_explanation else "AI insights not available.")
                         
                         st.write("**Travel Itinerary Preview:**")
-                        itinerary_preview = rec['detailed_itinerary'][:300] + "..." if len(rec['detailed_itinerary']) > 300 else rec['detailed_itinerary']
-                        st.write(itinerary_preview)
+                        itinerary = rec.get('detailed_itinerary', '') or ''
+                        itinerary_preview = itinerary[:300] + "..." if len(itinerary) > 300 else itinerary
+                        st.write(itinerary_preview if itinerary_preview else "Itinerary information not available.")
             
             # Comparison report
             if len(results['recommendations']) >= 2:

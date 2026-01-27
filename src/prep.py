@@ -30,7 +30,6 @@ class TripXPreprocessor:
         return 'luxury'
     
     def calculate_duration_compatibility(self, user_days: int, min_days: int, max_days: int) -> float:
-        # Perfect match if user duration is within range
         if min_days <= user_days <= max_days:
             return 1.0
         
@@ -53,7 +52,6 @@ class TripXPreprocessor:
         if user_season == dest_season:
             return 1.0
         
-        # Similar seasons get partial score
         season_similarity = {
             'spring': ['summer', 'fall'],
             'summer': ['spring', 'dry_season'],
@@ -84,7 +82,6 @@ class TripXPreprocessor:
         numerical_features = ['avg_cost_per_day', 'popularity_score', 'safety_score', 
                             'quality_score', 'min_days', 'max_days']
         
-        # Normalize to 0-1 range
         for feature in numerical_features:
             if feature in df_normalized.columns:
                 min_val = df_normalized[feature].min()

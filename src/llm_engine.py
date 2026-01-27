@@ -25,13 +25,11 @@ class FreeLLMEngine:
             self.model = "llama3-8b-8192"
         
         elif self.provider == "huggingface":
-            # Hugging Face API (free tier)
             self.api_key = os.getenv('HF_API_KEY', 'demo_key')
             self.base_url = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-large"
             self.model = "microsoft/DialoGPT-large"
         
         elif self.provider == "ollama":
-            # Local Ollama (free)
             self.base_url = "http://localhost:11434/api/generate"
             self.model = "llama2"
             self.api_key = None
@@ -121,20 +119,7 @@ class FreeLLMEngine:
     def _mock_llm_response(self, prompt: str) -> str:
         """Mock LLM response for demo purposes"""
         if "itinerary" in prompt.lower():
-            return """Day 1: Arrival and City Center
-- Morning: Arrive and check into accommodation
-- Afternoon: Explore the main city center and get oriented
-- Evening: Try local cuisine at a recommended restaurant
-
-Day 2: Cultural Exploration
-- Morning: Visit the most famous cultural attraction
-- Afternoon: Explore local markets and neighborhoods
-- Evening: Experience local nightlife or cultural performances
-
-Day 3: Nature and Relaxation
-- Morning: Visit natural attractions or parks
-- Afternoon: Leisure time for personal exploration
-- Evening: Sunset viewing at a scenic location"""
+            return 
         
         elif "explanation" in prompt.lower():
             return "This destination was recommended because it perfectly matches your preferences for culture and adventure, fits within your budget range, and offers the ideal trip duration you're looking for. The combination of rich history, vibrant local culture, and excellent safety ratings makes it an outstanding choice for your travel style."
@@ -144,11 +129,6 @@ Day 3: Nature and Relaxation
 
 
 class FreeAPIIntegrator:
-    """
-    Free API integrator for enriching recommendations.
-    
-    Note: APIs only provide enrichment data, not recommendations.
-    """
     
     def __init__(self):
         self.weather_base_url = "https://api.open-meteo.com/v1/forecast"
@@ -241,14 +221,6 @@ class FreeAPIIntegrator:
 
 
 class TravelItineraryGenerator:
-    """
-    Generates travel itineraries using ML recommendations + LLM text + API data.
-    
-    Architecture:
-    - ML System: Makes travel decisions
-    - LLM: Generates text only
-    - APIs: Provide enrichment data
-    """
     
     def __init__(self, llm_provider: str = "groq"):
         self.llm_engine = FreeLLMEngine(llm_provider)
@@ -269,29 +241,19 @@ class TravelItineraryGenerator:
         }
     
     def generate_itinerary(self, user_preferences: Dict, ml_recommendations: List[Dict]) -> Dict:
-        """
-        Generate complete travel itinerary using ML recommendations.
         
-        Note: ML recommendations are the source of truth.
-        LLM and APIs only enhance presentation and add context.
-        """
         if not ml_recommendations:
             return {'error': 'No ML recommendations provided'}
         
-        # Use the top ML recommendation as primary destination
         primary_destination = ml_recommendations[0]
         
-        # Get enrichment data
         weather_data = self._get_destination_weather(primary_destination)
         attractions = self._get_destination_attractions(primary_destination)
         
-        # Generate itinerary text using LLM
         itinerary_text = self._generate_itinerary_text(user_preferences, primary_destination, attractions)
         
-        # Generate explanation using LLM
         explanation = self._generate_explanation_text(user_preferences, primary_destination)
         
-        # Structure the complete itinerary
         itinerary = {
             'destination': primary_destination,
             'user_preferences': user_preferences,
@@ -368,13 +330,11 @@ Write a compelling 2-3 sentence explanation of why this is a perfect match."""
 
 if __name__ == "__main__":
     # Test the LLM and API integration
-    print("🤖 Testing LLM & API Integration")
+    print(" Testing LLM & API Integration")
     print("=" * 50)
     
-    # Initialize components
     generator = TravelItineraryGenerator("groq")  # Using Groq (free)
     
-    # Sample user preferences
     user_prefs = {
         'budget': 80,
         'duration': 5,
@@ -382,7 +342,6 @@ if __name__ == "__main__":
         'season': 'spring'
     }
     
-    # Sample ML recommendation (this would come from the ML system)
     ml_recommendation = {
         'destination': 'Paris',
         'country': 'France',
@@ -399,15 +358,15 @@ if __name__ == "__main__":
     itinerary = generator.generate_itinerary(user_prefs, [ml_recommendation])
     
     print(f"\n📍 Destination: {itinerary['destination']['destination']}")
-    print(f"🎯 ML Score: {itinerary['ml_score']:.3f}")
-    print(f"🌤️ Weather: {itinerary['weather_context']['current_temp']}°C")
-    print(f"🏛️ Top Attractions: {len(itinerary['top_attractions'])} found")
+    print(f" ML Score: {itinerary['ml_score']:.3f}")
+    print(f"Weather: {itinerary['weather_context']['current_temp']}°C")
+    print(f"Top Attractions: {len(itinerary['top_attractions'])} found")
     
-    print(f"\n📝 LLM-Generated Itinerary:")
+    print(f"\n LLM-Generated Itinerary:")
     print(itinerary['daily_itinerary'])
     
-    print(f"\n💡 LLM-Generated Explanation:")
+    print(f"\n LLM-Generated Explanation:")
     print(itinerary['llm_explanation'])
     
-    print(f"\n✅ Integration test complete!")
-    print(f"🔧 Architecture: ML (decisions) + LLM (text) + APIs (enrichment)")
+    print(f"\n Integration test complete!")
+    print(f" Architecture: ML (decisions) + LLM (text) + APIs (enrichment)")

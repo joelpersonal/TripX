@@ -15,15 +15,15 @@ class TripXIntegratedEngine:
     """
     
     def __init__(self, llm_provider: str = "groq"):
-        print("⚙️ Loading ML recommendation engine...")
+        print("Loading ML recommendation engine...")
         self.ml_engine, self.destinations_df = create_recommendation_engine('data/raw/dest.csv')
         
-        print("🤖 Loading LLM and API integrations...")
+        print("Loading LLM and API integrations...")
         self.itinerary_generator = TravelItineraryGenerator(llm_provider)
         
-        print("✅ Integrated engine ready!")
-        print(f"📊 ML Engine: {len(self.destinations_df)} destinations loaded")
-        print(f"🔧 LLM Provider: {llm_provider}")
+        print("Integrated engine ready!")
+        print(f"ML Engine: {len(self.destinations_df)} destinations loaded")
+        print(f"LLM Provider: {llm_provider}")
     
     def get_enhanced_recommendations(self, user_preferences: Dict, top_n: int = 3) -> Dict:
         """
@@ -35,7 +35,7 @@ class TripXIntegratedEngine:
         3. APIs provide weather and attraction data
         """
         
-        print("🎯 Generating ML recommendations...")
+        print("Generating ML recommendations...")
         user_profile = self.ml_engine.preprocessor.create_user_profile_features(
             budget=user_preferences['budget'],
             duration=user_preferences['duration'],
@@ -52,7 +52,7 @@ class TripXIntegratedEngine:
                 'user_preferences': user_preferences
             }
         
-        print("🔧 Enhancing with LLM and API data...")
+        print("Enhancing with LLM and API data...")
         enhanced_recommendations = []
         
         for i, ml_rec in enumerate(ml_recommendations):
@@ -134,7 +134,7 @@ Provide a brief comparison highlighting the unique strengths of each destination
 
 def test_integrated_system():
     """Test the integrated system with sample user profiles"""
-    print("🧪 Testing Integrated TripX System")
+    print("Testing Integrated TripX System")
     print("=" * 60)
     
     engine = TripXIntegratedEngine("groq")
@@ -162,7 +162,7 @@ def test_integrated_system():
     
     for profile in test_profiles:
         print(f"\n{'='*60}")
-        print(f"🎯 Testing: {profile['name']}")
+        print(f"Testing: {profile['name']}")
         print(f"Preferences: {profile['preferences']}")
         print(f"{'='*60}")
         
@@ -178,14 +178,14 @@ def test_integrated_system():
                 print(f" ML Score: {rec['ml_score']:.3f}")
                 print(f" Cost: ${ml_rec['cost_per_day']}/day")
                 print(f" ML Reasoning: {rec['ml_reasoning'][:100]}...")
-                print(f"🤖LLM Explanation: {rec['llm_explanation'][:100]}...")
-                print(f"🌤️ Weather: {rec['weather_info'].get('current_temp', 'N/A')}°C")
-                print(f"🏛️ Attractions: {len(rec['attractions'])} found")
+                print(f"LLM Explanation: {rec['llm_explanation'][:100]}...")
+                print(f"Weather: {rec['weather_info'].get('current_temp', 'N/A')}°C")
+                print(f"Attractions: {len(rec['attractions'])} found")
         else:
             print(f" No recommendations: {results.get('message', 'Unknown error')}")
     
-    print(f"\n✅ Integrated system test complete!")
-    print(f"🏗️ Architecture: ML (decisions) + LLM (text) + APIs (enrichment)")
+    print(f"\n Integrated system test complete!")
+    print(f"Architecture: ML (decisions) + LLM (text) + APIs (enrichment)")
 
 
 if __name__ == "__main__":
